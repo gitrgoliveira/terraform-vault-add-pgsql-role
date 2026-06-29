@@ -1,0 +1,3 @@
+usecase_name  = "orders-db"
+db_username   = "payments_app"
+k8s_namespace = "payments-ns"
