@@ -3,9 +3,9 @@ provider "vault" {
 }
 
 locals {
-  db_role_name = "${var.cluster_name}-${var.principal_name}-${var.usecase_name}-pg"
-  group_name   = "${var.cluster_name}-${var.principal_name}-${var.usecase_name}-db"
-  policy_name  = "${var.cluster_name}-${var.principal_name}-${var.usecase_name}-db-read"
+  db_role_name = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-pg"
+  group_name   = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db"
+  policy_name  = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db-read"
 }
 
 resource "vault_database_secret_backend_static_role" "this" {

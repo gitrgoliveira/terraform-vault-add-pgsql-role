@@ -34,8 +34,8 @@ output "vso_yaml" {
     jwt_auth_path       = var.jwt_auth_path
     k8s_namespace       = var.k8s_namespace
     k8s_service_account = var.k8s_service_account
-    principal_name      = var.principal_name
     usecase_name        = var.usecase_name
     vault_namespace     = var.vault_namespace
+    workload_name       = var.workload_name
   })
 }

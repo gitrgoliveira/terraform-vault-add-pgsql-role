@@ -5,26 +5,26 @@ terraform {
 locals {
   connection_db_connection_name = "payments-db"
   connection_db_mount_path      = "db/ocp-prod-eu/payments-db"
-  principal_auth_role_name      = "ocp-prod-eu-payments"
-  principal_cluster_name        = "ocp-prod-eu"
-  principal_entity_id           = "11111111-2222-3333-4444-555555555555"
-  principal_name                = "payments"
   trust_jwt_auth_path           = "jwt/ocp-prod-eu"
+  workload_auth_role_name       = "ocp-prod-eu-payments"
+  workload_cluster_name         = "ocp-prod-eu"
+  workload_entity_id            = "11111111-2222-3333-4444-555555555555"
+  workload_name                 = "payments"
 }
 
 module "add_pgsql_role" {
   source = "../../"
 
-  auth_role_name     = local.principal_auth_role_name
-  cluster_name       = local.principal_cluster_name
+  auth_role_name     = local.workload_auth_role_name
+  cluster_name       = local.workload_cluster_name
   db_connection_name = local.connection_db_connection_name
   db_mount_path      = local.connection_db_mount_path
   db_username        = var.db_username
-  entity_id          = local.principal_entity_id
+  entity_id          = local.workload_entity_id
   jwt_auth_path      = local.trust_jwt_auth_path
   k8s_namespace      = var.k8s_namespace
-  principal_name     = local.principal_name
   usecase_name       = var.usecase_name
+  workload_name      = local.workload_name
 }
 
 variable "db_username" {

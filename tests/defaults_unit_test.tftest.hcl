@@ -11,8 +11,8 @@ run "defaults_plan_succeeds" {
     db_username        = "app_user"
     entity_id          = "entity-123"
     jwt_auth_path      = "jwt/dev-cluster"
-    principal_name     = "apps"
     usecase_name       = "payments"
+    workload_name      = "apps"
   }
 
   assert {
