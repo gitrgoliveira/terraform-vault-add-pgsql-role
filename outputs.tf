@@ -11,12 +11,10 @@ output "group_name" {
 output "injector_yaml" {
   description = "Rendered Vault Agent Injector annotations snippet for static-creds path."
   value = templatefile("${path.module}/templates/injector-annotations.yaml.tftpl", {
-    auth_role_name  = var.auth_role_name
-    db_mount_path   = var.db_mount_path
-    db_role_name    = local.db_role_name
-    jwt_auth_path   = var.jwt_auth_path
-    vault_address   = var.vault_address
-    vault_namespace = var.vault_namespace
+    auth_role_name = local.auth_role_name
+    db_mount_path  = var.db_mount_path
+    db_role_name   = local.db_role_name
+    jwt_auth_path  = local.jwt_auth_path
   })
 }
 
@@ -26,16 +24,13 @@ output "policy_name" {
 }
 
 output "vso_yaml" {
-  description = "Rendered Vault Secrets Operator VaultDynamicSecret snippet for static-creds path."
+  description = "Rendered Vault Secrets Operator VaultAuth and VaultDynamicSecret snippet for static-creds path."
   value = templatefile("${path.module}/templates/vso-cr.yaml.tftpl", {
-    auth_role_name      = var.auth_role_name
-    db_mount_path       = var.db_mount_path
-    db_role_name        = local.db_role_name
-    jwt_auth_path       = var.jwt_auth_path
-    k8s_namespace       = var.k8s_namespace
-    k8s_service_account = var.k8s_service_account
-    usecase_name        = var.usecase_name
-    vault_namespace     = var.vault_namespace
-    workload_name       = var.workload_name
+    auth_role_name = local.auth_role_name
+    db_mount_path  = var.db_mount_path
+    db_role_name   = local.db_role_name
+    jwt_auth_path  = local.jwt_auth_path
+    usecase_name   = var.usecase_name
+    workload_name  = var.workload_name
   })
 }

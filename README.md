@@ -8,8 +8,7 @@ Use-case.
 
 ## Prerequisites
 
-- Workload module output `entity_id` and `auth_role_name`
-- Trust module output `jwt_auth_path`
+- Workload module must be applied first (entity is looked up by name `<cluster_name>-<workload_name>`)
 - Connection module outputs `db_mount_path` and `db_connection_name`
 
 ## Inputs
@@ -17,19 +16,12 @@ Use-case.
 | Name | Type | Description |
 |---|---|---|
 | `cluster_name` | `string` | Cluster identifier, regex validated |
-| `workload_name` | `string` | Workload identifier, regex validated |
-| `usecase_name` | `string` | Use-case identifier, regex validated |
-| `entity_id` | `string` | Workload entity ID |
-| `auth_role_name` | `string` | Workload login role name |
-| `jwt_auth_path` | `string` | Trust JWT auth path |
-| `db_mount_path` | `string` | Database backend mount path |
 | `db_connection_name` | `string` | Database backend connection name |
+| `db_mount_path` | `string` | Database backend mount path |
 | `db_username` | `string` | Existing PostgreSQL username |
 | `rotation_period` | `number` | Static role rotation period, default `86400` |
-| `k8s_namespace` | `string` | YAML render namespace |
-| `k8s_service_account` | `string` | Workload ServiceAccount for the rendered VaultAuth CR, default `default` |
-| `vault_namespace` | `string` | Render-only |
-| `vault_address` | `string` | Render-only |
+| `usecase_name` | `string` | Use-case identifier, regex validated |
+| `workload_name` | `string` | Workload identifier, regex validated |
 
 ## Outputs
 
@@ -44,42 +36,38 @@ Use-case.
 ## No-code notes
 
 - One module run grants one workload one database static-creds use-case.
-- Authorization is delivered through identity group membership (`member_entity_ids = [entity_id]`).
+- Authorization is delivered through identity group membership (entity looked up by name).
+- `auth_role_name` and `jwt_auth_path` are derived from `cluster_name` and `workload_name`.
+- Template placeholders `<VAULT_ADDRESS>`, `<VAULT_NAMESPACE>`, `<K8S_NAMESPACE>`, and `<K8S_SERVICE_ACCOUNT>` must be replaced with environment-specific values after rendering.
 
 ## No-code provisioning
 
-This module is no-code enabled in the `hc-ric-demo` private registry (pinned to `0.1.0`). Click **Provision workspace**, pick a project and workspace name, then complete the form. Connection outputs come from `pgsql-onboarding`; `entity_id` and `auth_role_name` from the workload module.
+This module is no-code enabled in the `hc-ric-demo` private registry (pinned to `0.4.0`). Click **Provision workspace**, pick a project and workspace name, then complete the form. Connection outputs come from `pgsql-onboarding`; the workload module must be applied first so the entity can be discovered.
 
 Form fields:
 
 | Field | Required | Notes |
 |---|---|---|
 | `cluster_name` | yes | Cluster identifier |
-| `workload_name` | yes | Workload identifier |
-| `usecase_name` | yes | Use-case identifier |
-| `entity_id` | yes | Workload entity ID |
-| `auth_role_name` | yes | Workload login role |
-| `jwt_auth_path` | yes | From trust module |
-| `db_mount_path` / `db_connection_name` | yes | From connection module |
+| `db_connection_name` | yes | From connection module |
+| `db_mount_path` | yes | From connection module |
 | `db_username` | yes | Existing PostgreSQL user |
+| `usecase_name` | yes | Use-case identifier |
+| `workload_name` | yes | Workload identifier |
 
 ## Registry usage
 
 ```hcl
 module "add_pgsql_role" {
   source  = "app.terraform.io/<org>/add-pgsql-role/vault"
-  version = "~> 0.1.0"
+  version = "~> 0.4.0"
 
   cluster_name       = "ocp-prod-eu"
   workload_name      = "payments"
   usecase_name       = "orders-db"
-  entity_id          = "11111111-2222-3333-4444-555555555555"
-  auth_role_name     = "ocp-prod-eu-payments"
-  jwt_auth_path      = "jwt/ocp-prod-eu"
   db_mount_path      = "db/ocp-prod-eu/payments-db"
   db_connection_name = "payments-db"
   db_username        = "payments_app"
-  k8s_namespace      = "payments-ns"
 }
 ```
 
@@ -90,9 +78,9 @@ module "add_pgsql_role" {
 ```yaml
 vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/role: "ocp-prod-eu-payments"
-vault.hashicorp.com/auth-path: "jwt/ocp-prod-eu"
-vault.hashicorp.com/service: "https://vault.example.com"
-vault.hashicorp.com/namespace: "admin/prod/payments"
+vault.hashicorp.com/auth-path: "auth/jwt/ocp-prod-eu"
+vault.hashicorp.com/service: "<VAULT_ADDRESS>"
+vault.hashicorp.com/namespace: "<VAULT_NAMESPACE>"
 vault.hashicorp.com/agent-inject-secret-db.json: "db/ocp-prod-eu/payments-db/static-creds/ocp-prod-eu-payments-orders-db-pg"
 ```
 
@@ -103,7 +91,7 @@ apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultDynamicSecret
 metadata:
   name: payments-orders-db
-  namespace: payments-ns
+  namespace: <K8S_NAMESPACE>
 spec:
   vaultAuthRef: ocp-prod-eu-payments
   mount: db/ocp-prod-eu/payments-db

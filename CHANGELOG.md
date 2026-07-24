@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-07-24
+
+### Changed
+- BREAKING: removed `entity_id` input variable. The workload entity is now discovered automatically via a `vault_identity_entity` data source using the naming convention `<cluster_name>-<workload_name>`. The workload module must be applied first. No-code form reduced from 8 to 7 fields.
+
+## [0.3.0] - 2026-07-24
+
+### Changed
+- BREAKING: removed 6 render-only variables (`auth_role_name`, `jwt_auth_path`, `vault_address`, `vault_namespace`, `k8s_namespace`, `k8s_service_account`). `auth_role_name` and `jwt_auth_path` are now derived in locals; the remaining 4 are replaced by placeholders in templates. No-code form reduced from 14 to 8 fields.
+
+## [0.2.0] - 2026-07-24
+
+### Added
+- Validation block for `db_connection_name` using the standard identifier regex.
+- Negative validation test for `workload_name` in unit tests.
+
+### Fixed
+- README injector annotations example now shows the correct `auth/` prefix on `vault.hashicorp.com/auth-path`.
+- `vso_yaml` output description updated to mention both VaultAuth and VaultDynamicSecret resources.
+
 ## [0.1.0] - 2026-07-07
 
 ### Changed

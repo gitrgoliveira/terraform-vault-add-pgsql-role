@@ -4,13 +4,10 @@ run "defaults_plan_succeeds" {
   command = plan
 
   variables {
-    auth_role_name     = "dev-cluster-apps"
     cluster_name       = "dev-cluster"
     db_connection_name = "appdb"
     db_mount_path      = "db/dev-cluster/appdb"
     db_username        = "app_user"
-    entity_id          = "entity-123"
-    jwt_auth_path      = "jwt/dev-cluster"
     usecase_name       = "payments"
     workload_name      = "apps"
   }

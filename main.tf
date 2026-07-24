@@ -3,9 +3,15 @@ provider "vault" {
 }
 
 locals {
-  db_role_name = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-pg"
-  group_name   = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db"
-  policy_name  = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db-read"
+  auth_role_name = "${var.cluster_name}-${var.workload_name}"
+  db_role_name   = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-pg"
+  group_name     = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db"
+  jwt_auth_path  = "jwt/${var.cluster_name}"
+  policy_name    = "${var.cluster_name}-${var.workload_name}-${var.usecase_name}-db-read"
+}
+
+data "vault_identity_entity" "workload" {
+  entity_name = local.auth_role_name
 }
 
 resource "vault_database_secret_backend_static_role" "this" {
@@ -30,5 +36,5 @@ resource "vault_identity_group" "this" {
   name              = local.group_name
   type              = "internal"
   policies          = [vault_policy.this.name]
-  member_entity_ids = [var.entity_id]
+  member_entity_ids = [data.vault_identity_entity.workload.id]
 }
