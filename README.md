@@ -78,6 +78,7 @@ module "add_pgsql_role" {
 ```yaml
 vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/role: "ocp-prod-eu-payments"
+vault.hashicorp.com/auth-type: "jwt"
 vault.hashicorp.com/auth-path: "auth/jwt/ocp-prod-eu"
 vault.hashicorp.com/service: "<VAULT_ADDRESS>"
 vault.hashicorp.com/namespace: "<VAULT_NAMESPACE>"
