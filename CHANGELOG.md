@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.1] - 2026-07-29
+
+### Fixed
+
+- The `injector_yaml` README example now includes the `vault.hashicorp.com/auth-type: "jwt"` annotation that the rendered template emits; without it the Vault Agent Injector defaults to token auth.
+
 ## [0.4.0] - 2026-07-24
 
 ### Changed
