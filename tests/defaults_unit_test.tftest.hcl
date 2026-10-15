@@ -31,4 +31,19 @@ run "defaults_plan_succeeds" {
     condition     = strcontains(output.injector_yaml, "static-creds/dev-cluster-apps-payments-pg")
     error_message = "injector_yaml should reference static-creds path for computed role name."
   }
+
+  assert {
+    condition     = strcontains(output.injector_yaml, "auth-config-path: \"/var/run/secrets/vault.hashicorp.com/serviceaccount/token\"")
+    error_message = "injector_yaml must point Vault Agent's JWT method at the projected token (it fails without 'path')."
+  }
+
+  assert {
+    condition     = strcontains(output.vso_yaml, "allowStaticCreds: true")
+    error_message = "vso_yaml must allow static creds; VSO otherwise treats static-creds/ as a leased secret."
+  }
+
+  assert {
+    condition     = strcontains(output.vso_yaml, "audiences:\n      - vault")
+    error_message = "the VaultAuth must request a token with the workload role's bound audience."
+  }
 }

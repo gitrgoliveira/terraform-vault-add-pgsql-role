@@ -10,6 +10,8 @@ spec:
   jwt:
     role: ${auth_role_name}
     serviceAccount: <K8S_SERVICE_ACCOUNT>
+    audiences:
+      - vault
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultDynamicSecret
@@ -20,6 +22,7 @@ spec:
   vaultAuthRef: ${workload_name}-${usecase_name}-auth
   mount: ${db_mount_path}
   path: static-creds/${db_role_name}
+  allowStaticCreds: true
   destination:
     create: true
     name: ${workload_name}-${usecase_name}
