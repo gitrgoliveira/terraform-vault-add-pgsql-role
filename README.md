@@ -31,7 +31,7 @@ Use-case.
 | `policy_name` | Static-creds read policy name |
 | `group_name` | Identity group name |
 | `injector_yaml` | Vault Agent Injector annotations YAML |
-| `vso_yaml` | Vault Secrets Operator VaultDynamicSecret YAML |
+| `vso_yaml` | Vault Secrets Operator VaultAuth and VaultDynamicSecret YAML |
 
 ## No-code notes
 
@@ -89,12 +89,25 @@ vault.hashicorp.com/agent-inject-secret-db.json: "db/ocp-prod-eu/payments-db/sta
 
 ```yaml
 apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: payments-orders-db-auth
+  namespace: <K8S_NAMESPACE>
+spec:
+  method: jwt
+  mount: jwt/ocp-prod-eu
+  namespace: <VAULT_NAMESPACE>
+  jwt:
+    role: ocp-prod-eu-payments
+    serviceAccount: <K8S_SERVICE_ACCOUNT>
+---
+apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultDynamicSecret
 metadata:
   name: payments-orders-db
   namespace: <K8S_NAMESPACE>
 spec:
-  vaultAuthRef: ocp-prod-eu-payments
+  vaultAuthRef: payments-orders-db-auth
   mount: db/ocp-prod-eu/payments-db
   path: static-creds/ocp-prod-eu-payments-orders-db-pg
   destination:
