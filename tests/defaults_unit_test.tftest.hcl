@@ -38,6 +38,11 @@ run "defaults_plan_succeeds" {
   }
 
   assert {
+    condition     = strcontains(output.injector_yaml, "agent-service-account-token-volume-name: \"vault-token\"")
+    error_message = "the injector must mount the projected token volume, or auth-config-path points at nothing."
+  }
+
+  assert {
     condition     = strcontains(output.vso_yaml, "allowStaticCreds: true")
     error_message = "vso_yaml must allow static creds; VSO otherwise treats static-creds/ as a leased secret."
   }
