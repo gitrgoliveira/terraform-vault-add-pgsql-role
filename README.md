@@ -42,7 +42,7 @@ Use-case.
 
 ## No-code provisioning
 
-This module is no-code enabled in the `hc-ric-demo` private registry (pinned to `0.4.0`). Click **Provision workspace**, pick a project and workspace name, then complete the form. Connection outputs come from `pgsql-onboarding`; the workload module must be applied first so the entity can be discovered.
+This module is no-code enabled in the `hc-ric-demo` private registry (pinned to `0.4.1`). Click **Provision workspace**, pick a project and workspace name, then complete the form. Connection outputs come from `pgsql-onboarding`; the workload module must be applied first so the entity can be discovered.
 
 Form fields:
 
@@ -60,7 +60,7 @@ Form fields:
 ```hcl
 module "add_pgsql_role" {
   source  = "app.terraform.io/<org>/add-pgsql-role/vault"
-  version = "~> 0.4.0"
+  version = "~> 0.4.1"
 
   cluster_name       = "ocp-prod-eu"
   workload_name      = "payments"
